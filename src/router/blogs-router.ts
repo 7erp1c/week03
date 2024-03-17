@@ -51,7 +51,7 @@ blogsRouter.put('/:id',authGuardMiddleware,blogsValidation,errorsValidation, asy
     }
 
     if (isUpdateBlogs) {
-        const foundBlogs = blogsRepositories.findBlogsByID(req.params.id)
+        const foundBlogs = await blogsRepositories.findBlogsByID(req.params.id)
         console.log(foundBlogs);
         res.send(foundBlogs)
         return

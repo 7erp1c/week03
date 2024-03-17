@@ -1,11 +1,12 @@
-import {getBlogsView} from "../model/blogsType/getBlogsView";
-import {dbBlogs} from "../db/dbBlogs";
+
 import {blogsView} from "../model/blogsType/blogsView";
+import {blogCollection} from "../index";
+
 
 export const blogsRepositories = {
 //get(/)
     async findFullBlogs(): Promise<blogsView[]> {
-        return dbBlogs.blogs
+        return blogCollection.find({}).toArray()
     },
 //post(/)
     async createBlogs(name: string, description: string, websiteUrl: string): Promise<blogsView> {
@@ -15,46 +16,33 @@ export const blogsRepositories = {
             name: name,
             description: description,
             websiteUrl: websiteUrl,
+            createdAt: new Date().toISOString(),
+            isMembership:false
 
         };
-        dbBlogs.blogs.push(getBlogsView(newBlogs))
-
+        await blogCollection.insertOne(newBlogs)
         return newBlogs
 
     },
 //get(/id)
     async findBlogsByID(id: string): Promise<blogsView|undefined> {
-        let foundBlogs = dbBlogs.blogs.find(c => c.id === id);
-
-        return (foundBlogs)
+        let foundBlogs: blogsView | null    = await blogCollection.findOne({id:id});
+        if(foundBlogs){
+            return foundBlogs
+        } else return
 
     },
 //put(/id)
     async updateBlogs(id: string, name: string, description: string, websiteUrl: string): Promise<boolean> {
-        let foundBlogs = dbBlogs.blogs.find(v => v.id === id);
+        const result = await blogCollection
+            .updateOne({id:id},{$set:{name:name,description:description,websiteUrl:websiteUrl}})
+        return result.matchedCount === 1
 
-        if (foundBlogs) {
-         console.log(foundBlogs)
-            foundBlogs.name = name;
-            foundBlogs.description = description;
-            foundBlogs.websiteUrl = websiteUrl;
-         console.log(foundBlogs)
-            return true;
-        } else {
-            return false
-        }
     },
 //delete(/id)
     async deleteBlogs(id: string):Promise<boolean> {
-        const searchBlogs = dbBlogs.blogs.find((b => b.id === id))
-        if (searchBlogs) {
-            dbBlogs.blogs = dbBlogs.blogs
-                .filter(c => c.id !== id)
-            return true
-        } else {
-            return false
-        }
-
+        const result = await blogCollection.deleteOne({id:id})
+        return result.deletedCount === 1
     }
 
 

@@ -1,14 +1,13 @@
-import { dbPosts } from "../db/dbPosts";
 import {dbBlogs} from "../db/dbBlogs";
 import {postsView} from "../model/postsType/postsView";
-
+import {postCollection} from "../index";
 
 
 
 export const postsRepositories = {
     //get(/)
     async findFullPosts():Promise<postsView[]> {
-        return dbPosts.posts
+        return postCollection.find({}).toArray()
     },
 //post(/)
     async createPosts(id:string, title: string, shortDescription: string, content: string, blogId:string,blogName:string):Promise<postsView> {
@@ -22,49 +21,33 @@ export const postsRepositories = {
             shortDescription: shortDescription,
             content: content,
             blogId: blogId,
-            blogName: getNameByID
+            blogName: getNameByID,
+            createdAt: new Date().toISOString()
 
         };
-        dbPosts.posts.push(newPosts)
+        await postCollection.insertOne(newPosts)
 
         return newPosts
 
     },
 //get(/id)
     async findPostsByID(id: string):Promise<postsView|undefined> {
-        let foundPosts = dbPosts.posts.find(c => c.id === id);
-
-        return (foundPosts)
+        let foundPosts: postsView | null = await postCollection.findOne({id: id});
+        if (foundPosts) {
+            return foundPosts
+        } else return
 
     },
 //put(/id)
-    async updatePosts(id: string, title: string, shortDescription: string, content: string, blogId:string,blogName:string):Promise<boolean> {
-        let foundPosts = dbPosts.posts.find(v => v.id === id);
-        let getNameByID = dbBlogs.blogs
-            .filter(b=> b.id ===  blogId)
-            .map(n => n.name).toString()
-        if (foundPosts) {
-            foundPosts.title = title;
-            foundPosts.shortDescription = shortDescription;
-            foundPosts.content = content;
-            foundPosts.blogId = blogId;
-            foundPosts.blogName = getNameByID;
-            return true;
-            } else {
-            return false
-        }
+    async updatePosts(id: string, title: string, shortDescription: string, content: string, blogId:string):Promise<boolean> {
+        const result = await postCollection
+            .updateOne({id:id},{$set:{title:title,shortDescription:shortDescription,content:content,blogId:blogId}})
+        return result.matchedCount === 1
 
     },
 //delete(/id)
     async deletePosts(id: string): Promise<boolean> {
-        const searchPosts = dbPosts.posts.find((b => b.id === id))
-        if (searchPosts) {
-            dbPosts.posts = dbPosts.posts
-                .filter(c => c.id !== id)
-            return true
-        } else {
-            return false
-        }
-
+        const result = await postCollection.deleteOne({id:id})
+        return result.deletedCount === 1
     }
 }

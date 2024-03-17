@@ -6,6 +6,8 @@ export const getBlogsView = (dbBlogs: blogsView): blogsView => {
         name: dbBlogs.name,
         description: dbBlogs.description,
         websiteUrl: dbBlogs.websiteUrl,
+        createdAt: dbBlogs.createdAt,
+        isMembership: dbBlogs.isMembership
 
     }
 }

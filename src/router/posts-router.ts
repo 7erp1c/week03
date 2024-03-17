@@ -38,7 +38,7 @@ postsRouter.get('/:id', async (req: Request, res: Response) => {
 
 postsRouter.put('/:id', authGuardMiddleware, postsValidation, errorsValidation, async (req: Request, res: Response) => {
     const rB = req.body
-    const isUpdatePosts = await postsRepositories.updatePosts(req.params.id, rB.title, rB.shortDescription, rB.content, rB.blogId, rB.blogName)
+    const isUpdatePosts = await postsRepositories.updatePosts(req.params.id, rB.title, rB.shortDescription, rB.content, rB.blogId)
 
     const postId = req.params.id;
     const postIndex = dbPosts.posts.findIndex(p => p.id === postId);
@@ -51,7 +51,7 @@ postsRouter.put('/:id', authGuardMiddleware, postsValidation, errorsValidation, 
         return;
     }
     if (isUpdatePosts) {
-        const foundPosts = postsRepositories.findPostsByID(req.params.id)
+        const foundPosts = await postsRepositories.findPostsByID(req.params.id)
 
         res.send(foundPosts)
         return

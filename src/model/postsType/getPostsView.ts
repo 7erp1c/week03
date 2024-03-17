@@ -8,7 +8,8 @@ export const getPostsView = (dbPosts: postsView): postsView => {
         shortDescription: dbPosts.shortDescription,
         content: dbPosts.content,
         blogId: dbPosts.blogId,
-        blogName: dbPosts.blogName
+        blogName: dbPosts.blogName,
+        createdAt: dbPosts.createdAt
 
     }
 }
