@@ -28,8 +28,10 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
         res.sendStatus(404)
         return;
 
-    } res.json(foundBlogsFromRep)
-        .send(200)
+    } else {
+        res.send(foundBlogsFromRep)
+        return;
+    }
 
 
 })

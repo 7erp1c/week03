@@ -27,9 +27,10 @@ postsRouter.get('/:id', async (req: Request, res: Response) => {
     if (!foundPostsFromRep) {
         res.sendStatus(404)
         return;
+    }else{
+        res.send(foundPostsFromRep)
+        return
     }
-    res.json(foundPostsFromRep)
-        .send(200)
 })
 
 
