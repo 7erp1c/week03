@@ -6,7 +6,6 @@ import {authGuardMiddleware} from "../middleware/authGuardMiddleware";
 import {errorsValidation} from "../middleware/errorsValidation";
 import {blogsValidation} from "../middleware/inputValidationMiddleware";
 import {dbBlogs} from "../db/dbBlogs";
-import {postsRepositories} from "../repositories/postsRepositories";
 
 
 export const blogsRouter = Router({})
@@ -60,7 +59,6 @@ blogsRouter.put('/:id', authGuardMiddleware, blogsValidation, errorsValidation, 
         return;
     }
 
-    res.sendStatus(404);
 });
 
 
