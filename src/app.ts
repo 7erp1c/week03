@@ -17,5 +17,5 @@ app.get('/', (req: Request, res: Response) => {
 app.delete('/testing/all-data', async (req, res) => {
 
     await db.dropDatabase()
-    res.sendStatus(204);
+    return res.sendStatus(204);
 })
