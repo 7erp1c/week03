@@ -5,6 +5,8 @@ import {blogsRepositories} from "../repositories/blogsRepositories";
 import {authGuardMiddleware} from "../middleware/authGuardMiddleware";
 import {errorsValidation} from "../middleware/errorsValidation";
 import {blogsValidation} from "../middleware/inputValidationMiddleware";
+import {dbBlogs} from "../db/dbBlogs";
+import {postsRepositories} from "../repositories/postsRepositories";
 
 
 export const blogsRouter = Router({})
@@ -39,24 +41,24 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
 blogsRouter.put('/:id', authGuardMiddleware, blogsValidation, errorsValidation, async (req: Request, res: Response) => {
         const isUpdateBlogs = await blogsRepositories.updateBlogs(req.params.id, req.body.name, req.body.description, req.body.websiteUrl)
 
-        const blogsId: string = req.params.id;
-        const blogsIndexId = await blogsRepositories.findBlogsByID( blogsId )
+        const BlogsId = req.params.id;
+        const blogsIndexId = dbBlogs.blogs.findIndex(p => p.id === BlogsId);
+        if (blogsIndexId === -1) {
+            res.sendStatus(404);
+            return;
+        }
         if (Object.keys(isUpdateBlogs).length === 0) {
             res.sendStatus(204)
-            return
+            return;
         }
         if (isUpdateBlogs) {
-            const foundBlogs = await blogsRepositories.findBlogsByID(blogsId)
-            res.send(foundBlogs)
-            return
-        }
-        if (!blogsIndexId) {
-
-            res.send(404);
+            const foundPosts = await postsRepositories.findPostsByID(BlogsId)
+            res.send(foundPosts)
             return
         }
 
-        res.send(404)
+
+        res.sendStatus(404)
         return
     }
 )

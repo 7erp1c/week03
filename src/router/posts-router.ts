@@ -40,6 +40,10 @@ postsRouter.put('/:id', authGuardMiddleware, postsValidation, errorsValidation, 
 
     const postId = req.params.id;
     const postIndex =  dbPosts.posts.findIndex(p => p.id === postId);
+    if(postIndex === -1){
+        res.sendStatus(404);
+        return;
+    }
     if(Object.keys(isUpdatePosts).length === 0){
         res.sendStatus(204)
         return;
@@ -49,10 +53,7 @@ postsRouter.put('/:id', authGuardMiddleware, postsValidation, errorsValidation, 
         res.send(foundPosts)
         return
     }
-    if(postIndex === -1){
-        res.sendStatus(404);
-        return;
-    }
+
 
     res.sendStatus(404)
     return
