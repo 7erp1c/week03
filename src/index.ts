@@ -25,6 +25,6 @@ const startApp = async() => {
     })
 }
  startApp()
-export let db = client.db("blogsAndPosts");
+export let db = client.db();
 export const blogCollection: Collection<blogsView> = db.collection<blogsView>("blogs")
 export const postCollection: Collection<postsView> = db.collection<postsView>("posts")
