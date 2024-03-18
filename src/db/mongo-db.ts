@@ -1,6 +1,5 @@
 import {client} from "../index";
 
-
 export const connectToDB = async () => {
     try {
         await client.connect()

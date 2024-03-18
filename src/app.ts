@@ -10,7 +10,6 @@ app.use(express.json())
 app.use('/blogs', blogsRouter)
 app.use('/posts', postsRouter)
 
-
 app.get('/', (req: Request, res: Response) => {
     res
         .status(200)
