@@ -1,6 +1,6 @@
 
 import {blogsView} from "../model/blogsType/blogsView";
-import {blogCollection} from "../index";
+import {blogCollection} from "../db/mongo-db";
 
 
 export const blogsRepositories = {

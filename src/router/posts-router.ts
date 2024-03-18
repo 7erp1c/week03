@@ -7,7 +7,6 @@ import {authGuardMiddleware} from "../middleware/authGuardMiddleware";
 import {postsValidation} from "../middleware/inputValidationMiddleware";
 import {errorsValidation} from "../middleware/errorsValidation";
 import {dbPosts} from "../db/dbPosts";
-import {blogsView} from "../model/blogsType/blogsView";
 
 
 export const postsRouter = Router({})

@@ -1,7 +1,6 @@
-import {dbBlogs} from "../db/dbBlogs";
+import {blogCollection, postCollection} from "../db/mongo-db";
 import {postsView} from "../model/postsType/postsView";
-import {postCollection, blogCollection} from "../index";
-import {blogsView} from "../model/blogsType/blogsView";
+
 
 
 

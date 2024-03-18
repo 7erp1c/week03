@@ -1,13 +1,12 @@
 import {Request, Response, Router} from "express";
 import {_delete_all_, blogsCreateAndPutModel} from "../typeForReqRes/blogsCreateAndPutModel";
 import {RequestWithBlogsPOST, RequestWithDelete} from "../typeForReqRes/helperTypeForReq";
-import {getBlogsView} from "../model/blogsType/getBlogsView";
 import {blogsRepositories} from "../repositories/blogsRepositories";
 import {authGuardMiddleware} from "../middleware/authGuardMiddleware";
 import {errorsValidation} from "../middleware/errorsValidation";
 import {blogsValidation} from "../middleware/inputValidationMiddleware";
 import {dbBlogs} from "../db/dbBlogs";
-import {blogsView} from "../model/blogsType/blogsView";
+
 
 
 export const blogsRouter = Router ({})
