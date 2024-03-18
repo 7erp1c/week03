@@ -4,9 +4,9 @@ import { validationResult} from "express-validator";
 
 
 
-export const errorsValidation = (req:Request, res:Response, next:NextFunction) => {
+export const errorsValidation = async (req:Request, res:Response, next:NextFunction) => {
 
-        const errors = validationResult(req);
+        const errors =  validationResult(req);
         const errorMessages: { message: string, field: string}[]=[];
         if(!errors.isEmpty()){
             errors.array({onlyFirstError:true}).forEach((error) => {
