@@ -15,7 +15,12 @@ app.get('/', (req: Request, res: Response) => {
 
 })
 app.delete('/testing/all-data', async (req, res) => {
+    try {
+        await db.dropDatabase();
+        res.sendStatus(204); // Отправляем статус 204 после успешного удаления базы данных
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error'); // Если возникла ошибка, отправляем статус 500
+    }
 
-    await db.dropDatabase()
-    return res.sendStatus(204);
 })
