@@ -1,5 +1,6 @@
 import {body} from "express-validator";
 import {dbBlogs} from "../db/dbBlogs";
+import {blogCollection} from "../index";
 
 
 
@@ -21,10 +22,10 @@ body('title').trim().isString().isLength({min:1,max:30}).bail(),
 body('shortDescription').trim().isString().isLength({min:1,max:100}).bail(),
 body('content').trim().isString().isLength({min:1,max:1000}),
 body('blogId').trim().isString().custom(
-    (value) => {
-        const blog = dbBlogs.blogs.find(el => el.id === value);
+    async (value) => {
+        const blog = await blogCollection.findOne({  id: value  });
         if (!blog) {
-            throw new Error();
+            throw new Error("Blog not found");
         }
         return value;
     }

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response,} from "express";
-import {FieldValidationError, ValidationError, validationResult} from "express-validator";
-import {dbBlogs} from "../db/dbBlogs";
+import { validationResult} from "express-validator";
+
 
 
 
@@ -12,9 +12,9 @@ export const errorsValidation = (req:Request, res:Response, next:NextFunction) =
             errors.array({onlyFirstError:true}).forEach((error) => {
                 errorMessages.push({ message: 'Bad request',  field: error.type === 'field'? error.path: 'not found field' });
             })
-            res.status(400).json({ errorsMessages: errorMessages });
+            return res.status(400).json({ errorsMessages: errorMessages });
         }
 
-    next()
+    return next()
 }
 

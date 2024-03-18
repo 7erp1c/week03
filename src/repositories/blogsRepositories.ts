@@ -6,7 +6,7 @@ import {blogCollection} from "../index";
 export const blogsRepositories = {
 //get(/)
     async findFullBlogs(): Promise<blogsView[]> {
-        return blogCollection.find({}).toArray()
+        return blogCollection.find({},{ projection: { _id: 0 }}).toArray()
     },
 //post(/)
     async createBlogs(name: string, description: string, websiteUrl: string): Promise<blogsView> {
@@ -17,19 +17,23 @@ export const blogsRepositories = {
             description: description,
             websiteUrl: websiteUrl,
             createdAt: new Date().toISOString(),
-            isMembership:false
-
+            isMembership:false,
         };
         await blogCollection.insertOne(newBlogs)
-        return newBlogs
+        let newBlogsWithoutId = {...newBlogs} as any;
+        delete newBlogsWithoutId._id;
+
+        return newBlogsWithoutId as blogsView;
 
     },
 //get(/id)
-    async findBlogsByID(id: string): Promise<blogsView|undefined> {
-        let foundBlogs: blogsView | null    = await blogCollection.findOne({id:id});
+    async findBlogsByID(id: string): Promise<blogsView|null> {
+        let foundBlogs: blogsView | null    = await blogCollection.findOne({id}, { projection: { _id: 0 }});
         if(foundBlogs){
             return foundBlogs
-        } else return
+        } else {
+            return null
+        }
 
     },
 //put(/id)
@@ -37,7 +41,6 @@ export const blogsRepositories = {
         const result = await blogCollection
             .updateOne({id:id},{$set:{name:name,description:description,websiteUrl:websiteUrl}})
         return result.matchedCount === 1
-
     },
 //delete(/id)
     async deleteBlogs(id: string):Promise<boolean> {

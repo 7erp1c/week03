@@ -1,19 +1,28 @@
 import {dbBlogs} from "../db/dbBlogs";
 import {postsView} from "../model/postsType/postsView";
-import {postCollection} from "../index";
+import {postCollection, blogCollection} from "../index";
+import {blogsView} from "../model/blogsType/blogsView";
 
 
 
 export const postsRepositories = {
     //get(/)
     async findFullPosts():Promise<postsView[]> {
-        return postCollection.find({}).toArray()
+        return postCollection.find({},{ projection: { _id: 0 }}).toArray()
     },
 //post(/)
-    async createPosts(id:string, title: string, shortDescription: string, content: string, blogId:string,blogName:string):Promise<postsView> {
-        let getNameByID = dbBlogs.blogs
-            .filter(b=> b.id ===  blogId)
-            .map(n => n.name).toString()
+
+    async createPosts( title: string, shortDescription: string, content: string, blogId:string):Promise<postsView> {
+
+        async function getNameByID(id: string): Promise<string | null> {
+            const blog = await blogCollection
+                .findOne({ id }, { projection: { _id: 0, name: 1 } });
+            return blog ? blog.name : null;
+        }
+        const blogName = await getNameByID(blogId)||''
+        // let getNameByID = dbBlogs.blogs
+        //     .filter(b=> b.id ===  blogId)
+        //    .map(n => n.name)[0]
 
         let newPosts = {
             id: (+new Date()).toString(),
@@ -21,22 +30,26 @@ export const postsRepositories = {
             shortDescription: shortDescription,
             content: content,
             blogId: blogId,
-            blogName: getNameByID,
+            blogName: blogName,
             createdAt: new Date().toISOString()
 
         };
         await postCollection.insertOne(newPosts)
+        let newPostsWithoutId = {...newPosts} as any;
+        delete newPostsWithoutId._id;
 
-        return newPosts
+        return newPostsWithoutId as postsView;
+
 
     },
 //get(/id)
-    async findPostsByID(id: string):Promise<postsView|undefined> {
-        let foundPosts: postsView | null = await postCollection.findOne({id: id});
+    async  findPostsByID(id: string):Promise<postsView|null> {
+        let foundPosts: postsView | null = await postCollection.findOne({id}, { projection: { _id: 0 }});
         if (foundPosts) {
             return foundPosts
-        } else return
-
+        } else {
+            return null
+        }
     },
 //put(/id)
     async updatePosts(id: string, title: string, shortDescription: string, content: string, blogId:string):Promise<boolean> {

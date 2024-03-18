@@ -7,7 +7,7 @@ export const getBlogsView = (dbBlogs: blogsView): blogsView => {
         description: dbBlogs.description,
         websiteUrl: dbBlogs.websiteUrl,
         createdAt: dbBlogs.createdAt,
-        isMembership: dbBlogs.isMembership
+        isMembership: dbBlogs.isMembership,
 
     }
 }

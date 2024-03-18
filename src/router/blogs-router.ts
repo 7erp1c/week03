@@ -13,7 +13,7 @@ import {blogsView} from "../model/blogsType/blogsView";
 export const blogsRouter = Router ({})
 
 blogsRouter.get('/', async (req: Request, res: Response) => {
-   const foundFullBlogs: blogsView[]  = await blogsRepositories.findFullBlogs()
+   const foundFullBlogs  = await blogsRepositories.findFullBlogs()
     res.send(foundFullBlogs)
 })
 
@@ -26,39 +26,38 @@ blogsRouter.post('/', authGuardMiddleware,blogsValidation,errorsValidation,
 
 blogsRouter.get('/:id', async (req: Request, res: Response) => {
     const foundBlogsFromRep = await blogsRepositories.findBlogsByID(req.params.id)
-    if (!foundBlogsFromRep) {
+    if (foundBlogsFromRep) {
+        res.send(foundBlogsFromRep)
+    }else{
         res.sendStatus(404)
         return;
     }
-    res.json(getBlogsView(foundBlogsFromRep))
-        .send(200)
+
+
 })
 
 
 blogsRouter.put('/:id',authGuardMiddleware,blogsValidation,errorsValidation, async (req: Request, res: Response) => {
     const isUpdateBlogs = await blogsRepositories.updateBlogs(req.params.id, req.body.name,req.body.description,req.body.websiteUrl)
 
-    const bBlogsId = req.params.id;
-    const blogsIndexId = dbBlogs.blogs.findIndex(p => p.id === bBlogsId);
-    if(blogsIndexId === -1){
-        res.send(404);
-        return;
-    }
-
-    if(Object.keys(isUpdateBlogs).length === 0){
-        res.sendStatus(204)
-        return;
-    }
+    const BlogsId = req.params.id;
+    const blogsIndexId = dbBlogs.blogs.findIndex(p => p.id === BlogsId);
 
     if (isUpdateBlogs) {
-        const foundBlogs = await blogsRepositories.findBlogsByID(req.params.id)
-        console.log(foundBlogs);
+        const foundBlogs = await blogsRepositories.findBlogsByID(BlogsId)
         res.send(foundBlogs)
         return
-    } else {
-        res.send(404)
     }
-
+    if(blogsIndexId === -1){
+        res.send(404);
+      return
+    }
+    if(Object.keys(isUpdateBlogs).length === 0){
+        res.sendStatus(204)
+        return
+    }
+        res.send(404)
+        return
 })
 
 
