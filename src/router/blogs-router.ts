@@ -43,21 +43,20 @@ blogsRouter.put('/:id',authGuardMiddleware,blogsValidation,errorsValidation, asy
     const blogsIndexId = dbBlogs.blogs.findIndex(p => p.id === BlogsId);
 
     if (isUpdateBlogs) {
-        const foundBlogs = await blogsRepositories.findBlogsByID(BlogsId)
-        res.send(foundBlogs)
-        return
+        const foundBlogs = await blogsRepositories.findBlogsByID(BlogsId);
+        res.send(foundBlogs);
+    } else {
+        const blogsIndexId = dbBlogs.blogs.findIndex(p => p.id === BlogsId);
+        if (blogsIndexId === -1) {
+            res.sendStatus(404);
+        } else if (Object.keys(isUpdateBlogs).length === 0) {
+            res.sendStatus(204);
+        } else {
+            res.status(404).send("Update failed");
+        }
     }
-    if(blogsIndexId === -1){
-        res.send(404);
-      return
-    }
-    if(Object.keys(isUpdateBlogs).length === 0){
-        res.sendStatus(204)
-        return
-    }
-        res.send(404)
-        return
 })
+
 
 
 blogsRouter.delete('/:id',authGuardMiddleware, async (req: RequestWithDelete<_delete_all_>, res: Response) => {
