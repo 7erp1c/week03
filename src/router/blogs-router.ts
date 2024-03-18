@@ -24,10 +24,12 @@ blogsRouter.post('/', authGuardMiddleware, blogsValidation, errorsValidation,
 
 blogsRouter.get('/:id', async (req: Request, res: Response) => {
     const foundBlogsFromRep = await blogsRepositories.findBlogsByID(req.params.id)
-    if (foundBlogsFromRep) {
-        res.send(foundBlogsFromRep)
-    } else {
+    if (!foundBlogsFromRep) {
         res.sendStatus(404)
+        return;
+
+    } else {
+        res.send(foundBlogsFromRep)
         return;
     }
 

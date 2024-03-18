@@ -24,11 +24,12 @@ postsRouter.post('/', authGuardMiddleware, postsValidation, errorsValidation, as
 
 postsRouter.get('/:id', async (req: Request, res: Response) => {
     const foundPostsFromRep = await postsRepositories.findPostsByID(req.params.id)
-    if (foundPostsFromRep) {
-        res.send(foundPostsFromRep)
-    }else{
+    if (!foundPostsFromRep) {
         res.sendStatus(404)
         return;
+    }else{
+        res.send(foundPostsFromRep)
+        return
     }
 })
 
@@ -39,6 +40,10 @@ postsRouter.put('/:id', authGuardMiddleware, postsValidation, errorsValidation, 
 
     const postId = req.params.id;
     const postIndex =  dbPosts.posts.findIndex(p => p.id === postId);
+    if(Object.keys(isUpdatePosts).length === 0){
+        res.sendStatus(204)
+        return;
+    }
     if (isUpdatePosts) {
         const foundPosts = await postsRepositories.findPostsByID(postId)
         res.send(foundPosts)
@@ -48,10 +53,7 @@ postsRouter.put('/:id', authGuardMiddleware, postsValidation, errorsValidation, 
         res.sendStatus(404);
         return;
     }
-    if(Object.keys(isUpdatePosts).length === 0){
-        res.sendStatus(204)
-        return;
-    }
+
     res.sendStatus(404)
     return
 
