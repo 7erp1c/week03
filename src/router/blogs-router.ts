@@ -64,9 +64,10 @@ blogsRouter.delete('/:id',authGuardMiddleware, async (req: RequestWithDelete<_de
 
     const isDelete = await blogsRepositories.deleteBlogs(req.params.id)
     if (isDelete) {
-        res.sendStatus(204)//Not Found
-    } else{
-        res.sendStatus(404)
+        res.sendStatus(204);
+        return
+    } else {
+        res.sendStatus(404);
+        return
     }
-
 })
