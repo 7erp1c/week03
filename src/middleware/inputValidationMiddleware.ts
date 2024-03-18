@@ -1,6 +1,7 @@
 import {body} from "express-validator";
-import {dbBlogs} from "../db/dbBlogs";
-import {blogCollection} from "../index";
+import { blogCollection } from "../db/mongo-db";
+
+
 
 
 

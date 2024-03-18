@@ -18,10 +18,7 @@ export const postsRepositories = {
                 .findOne({ id }, { projection: { _id: 0, name: 1 } });
             return blog ? blog.name : null;
         }
-        const blogName = await getNameByID(blogId)||''
-        // let getNameByID = dbBlogs.blogs
-        //     .filter(b=> b.id ===  blogId)
-        //    .map(n => n.name)[0]
+        const blogName = await getNameByID(blogId)||'';
 
         let newPosts = {
             id: (+new Date()).toString(),
