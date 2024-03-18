@@ -40,25 +40,15 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
 blogsRouter.put('/:id', authGuardMiddleware, blogsValidation, errorsValidation, async (req: Request, res: Response) => {
     const isUpdateBlogs = await blogsRepositories.updateBlogs(req.params.id, req.body.name, req.body.description, req.body.websiteUrl)
 
-    const BlogsId = req.params.id;
-    const blogsIndexId = dbBlogs.blogs.findIndex(p => p.id === BlogsId);
-
-    if (blogsIndexId === -1) {
-        res.sendStatus(404);
-        return;
-    }
-
-    if (Object.keys(isUpdateBlogs).length === 0) {
-        res.sendStatus(204);
-        return;
-    }
+    // const BlogsId = req.params.id;
+    // const blogsIndexId = dbBlogs.blogs.findIndex(p => p.id === BlogsId);
 
     if (isUpdateBlogs) {
-        const foundBlogs = await blogsRepositories.findBlogsByID(BlogsId);
-        res.send(foundBlogs);
-        return;
+        res.status(204).send()
     }
-
+    if(!isUpdateBlogs){
+        res.status(404).send()
+    }
 });
 
 
