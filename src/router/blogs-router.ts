@@ -8,26 +8,25 @@ import {blogsValidation} from "../middleware/inputValidationMiddleware";
 import {dbBlogs} from "../db/dbBlogs";
 
 
-
-export const blogsRouter = Router ({})
+export const blogsRouter = Router({})
 
 blogsRouter.get('/', async (req: Request, res: Response) => {
-   const foundFullBlogs  = await blogsRepositories.findFullBlogs()
+    const foundFullBlogs = await blogsRepositories.findFullBlogs()
     res.send(foundFullBlogs)
 })
 
-blogsRouter.post('/', authGuardMiddleware,blogsValidation,errorsValidation,
+blogsRouter.post('/', authGuardMiddleware, blogsValidation, errorsValidation,
     async (req: RequestWithBlogsPOST<blogsCreateAndPutModel>, res: Response) => {
-    const newBlogsFromRep = await blogsRepositories.createBlogs(req.body.name,req.body.description,req.body.websiteUrl)
-    res.status(201).send(newBlogsFromRep)
-})
+        const newBlogsFromRep = await blogsRepositories.createBlogs(req.body.name, req.body.description, req.body.websiteUrl)
+        res.status(201).send(newBlogsFromRep)
+    })
 
 
 blogsRouter.get('/:id', async (req: Request, res: Response) => {
     const foundBlogsFromRep = await blogsRepositories.findBlogsByID(req.params.id)
     if (foundBlogsFromRep) {
         res.send(foundBlogsFromRep)
-    }else{
+    } else {
         res.sendStatus(404)
         return;
     }
@@ -36,30 +35,32 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
 })
 
 
-blogsRouter.put('/:id',authGuardMiddleware,blogsValidation,errorsValidation, async (req: Request, res: Response) => {
-    const isUpdateBlogs = await blogsRepositories.updateBlogs(req.params.id, req.body.name,req.body.description,req.body.websiteUrl)
+blogsRouter.put('/:id', authGuardMiddleware, blogsValidation, errorsValidation, async (req: Request, res: Response) => {
+        const isUpdateBlogs = await blogsRepositories.updateBlogs(req.params.id, req.body.name, req.body.description, req.body.websiteUrl)
 
-    const BlogsId = req.params.id;
-    const blogsIndexId = dbBlogs.blogs.findIndex(p => p.id === BlogsId);
-
-    if (isUpdateBlogs) {
-        const foundBlogs = await blogsRepositories.findBlogsByID(BlogsId);
-        res.send(foundBlogs);
-    } else {
+        const BlogsId = req.params.id;
         const blogsIndexId = dbBlogs.blogs.findIndex(p => p.id === BlogsId);
-        if (blogsIndexId === -1) {
-            res.sendStatus(404);
-        } else if (Object.keys(isUpdateBlogs).length === 0) {
-            res.sendStatus(204);
-        } else {
-            res.status(404).send("Update failed");
+        if (Object.keys(isUpdateBlogs).length === 0) {
+            res.sendStatus(204)
+            return
         }
+        if (isUpdateBlogs) {
+            const foundBlogs = await blogsRepositories.findBlogsByID(BlogsId)
+            res.send(foundBlogs)
+            return
+        }
+        if (blogsIndexId === -1) {
+            res.send(404);
+            return
+        }
+
+        res.send(404)
+        return
     }
-})
+)
 
 
-
-blogsRouter.delete('/:id',authGuardMiddleware, async (req: RequestWithDelete<_delete_all_>, res: Response) => {
+blogsRouter.delete('/:id', authGuardMiddleware, async (req: RequestWithDelete<_delete_all_>, res: Response) => {
 
     const isDelete = await blogsRepositories.deleteBlogs(req.params.id)
     if (isDelete) {
