@@ -10,9 +10,9 @@ dotenv.config()
 
 export const mongoURI = process.env.MONGO_URL //|| 'mongodb://localhost:27017'
 console.log(process.env.MONGO_URL)
-if(!mongoURI){
-    throw new Error("URL doesn\'t found")
-}
+// if(!mongoURI){
+//     throw new Error("URL doesn\'t found")
+// }
 export const client: MongoClient = new MongoClient(mongoURI)
 
 const port = process.env.PORT || 4000
