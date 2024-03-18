@@ -40,22 +40,26 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
 blogsRouter.put('/:id', authGuardMiddleware, blogsValidation, errorsValidation, async (req: Request, res: Response) => {
         const isUpdateBlogs = await blogsRepositories.updateBlogs(req.params.id, req.body.name, req.body.description, req.body.websiteUrl)
 
-        const BlogsId = req.params.id;
-    if (isUpdateBlogs) {
-        const foundBlogs = await blogsRepositories.findBlogsByID(BlogsId);
-        res.send(foundBlogs);
-    } else {
-        const blogsIndexId = dbBlogs.blogs.findIndex(p => p.id === BlogsId);
-
-        if (blogsIndexId === -1) {
-            res.sendStatus(404); // Если блог с указанным ID не найден, вернуть статус 404
-        } else if (Object.keys(isUpdateBlogs).length === 0) {
-            res.sendStatus(204); // Если обновление блога выполнено успешно, но данные не изменились, вернуть статус 204
-        } else {
-            res.sendStatus(404); // В случае других ошибок, возвращаем статус 404
+        const blogsId: string = req.params.id;
+        const blogsIndexId = await blogsRepositories.findBlogsByID( blogsId )
+        if (Object.keys(isUpdateBlogs).length === 0) {
+            res.sendStatus(204)
+            return
         }
+        if (isUpdateBlogs) {
+            const foundBlogs = await blogsRepositories.findBlogsByID(blogsId)
+            res.send(foundBlogs)
+            return
+        }
+        if (!blogsIndexId) {
+
+            res.send(404);
+            return
+        }
+
+        res.send(404)
+        return
     }
-}
 )
 
 
