@@ -38,25 +38,14 @@ postsRouter.put('/:id', authGuardMiddleware, postsValidation, errorsValidation, 
     const rB = req.body
     const isUpdatePosts = await postsRepositories.updatePosts(req.params.id, rB.title, rB.shortDescription, rB.content, rB.blogId)
 
-    const postId = req.params.id;
-    const postIndex =  dbPosts.posts.findIndex(p => p.id === postId);
-    if(postIndex === -1){
-        res.sendStatus(404);
-        return;
-    }
-    if(Object.keys(isUpdatePosts).length === 0){
-        res.sendStatus(204)
-        return;
-    }
     if (isUpdatePosts) {
-        const foundPosts = await postsRepositories.findPostsByID(postId)
-        res.send(foundPosts)
+        res.status(204).send()
         return
     }
-
-
-    res.sendStatus(404)
-    return
+    if(!isUpdatePosts){
+        res.status(404).send()
+        return
+    }
 
 })
 
