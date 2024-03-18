@@ -39,29 +39,29 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
 
 
 blogsRouter.put('/:id', authGuardMiddleware, blogsValidation, errorsValidation, async (req: Request, res: Response) => {
-        const isUpdateBlogs = await blogsRepositories.updateBlogs(req.params.id, req.body.name, req.body.description, req.body.websiteUrl)
+    const isUpdateBlogs = await blogsRepositories.updateBlogs(req.params.id, req.body.name, req.body.description, req.body.websiteUrl)
 
-        const BlogsId = req.params.id;
-        const blogsIndexId = dbBlogs.blogs.findIndex(p => p.id === BlogsId);
-        if (blogsIndexId === -1) {
-            res.sendStatus(404);
-            return;
-        }
-        if (Object.keys(isUpdateBlogs).length === 0) {
-            res.sendStatus(204)
-            return;
-        }
-        if (isUpdateBlogs) {
-            const foundPosts = await postsRepositories.findPostsByID(BlogsId)
-            res.send(foundPosts)
-            return
-        }
+    const BlogsId = req.params.id;
+    const blogsIndexId = dbBlogs.blogs.findIndex(p => p.id === BlogsId);
 
-
-        res.sendStatus(404)
-        return
+    if (blogsIndexId === -1) {
+        res.sendStatus(404);
+        return;
     }
-)
+
+    if (Object.keys(isUpdateBlogs).length === 0) {
+        res.sendStatus(204);
+        return;
+    }
+
+    if (isUpdateBlogs) {
+        const foundBlogs = await blogsRepositories.findBlogsByID(BlogsId);
+        res.send(foundBlogs);
+        return;
+    }
+
+    res.sendStatus(404);
+});
 
 
 blogsRouter.delete('/:id', authGuardMiddleware, async (req: RequestWithDelete<_delete_all_>, res: Response) => {
