@@ -45,9 +45,11 @@ blogsRouter.put('/:id', authGuardMiddleware, blogsValidation, errorsValidation, 
 
     if (isUpdateBlogs) {
         res.status(204).send()
+        return
     }
     if(!isUpdateBlogs){
         res.status(404).send()
+        return
     }
 });
 
