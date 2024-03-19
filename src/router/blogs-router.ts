@@ -5,7 +5,6 @@ import {blogsRepositories} from "../repositories/blogsRepositories";
 import {authGuardMiddleware} from "../middleware/authGuardMiddleware";
 import {errorsValidation} from "../middleware/errorsValidation";
 import {blogsValidation} from "../middleware/inputValidationMiddleware";
-import {dbBlogs} from "../db/dbBlogs";
 
 
 export const blogsRouter = Router({})
